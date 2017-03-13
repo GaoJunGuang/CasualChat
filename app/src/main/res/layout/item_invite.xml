@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="5dp">
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/cc_default_avatar" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_invite_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="邀请人"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_invite_reason"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="邀请原因"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/bt_invite_accept"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/cc_invite_bt_bg_selector"
+        android:text="接受"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/bt_invite_reject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:background="@drawable/cc_invite_bt_bg_selector"
+        android:text="拒绝"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+</LinearLayout>

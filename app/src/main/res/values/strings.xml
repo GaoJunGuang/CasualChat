@@ -1,0 +1,14 @@
+<resources>
+    <!--<string name="app_name">CasualChat</string>-->
+    <string name="app_name">随聊</string>
+    <string name="title_activity_add_contact">AddContactActivity</string>
+    <string name="change">选项</string>
+    <string name="cc_notify">新消息提醒</string>
+    <string name="cc_new_notify">接收新消息</string>
+    <string name="cc_voice">声音</string>
+    <string name="cc_shake">震动</string>
+    <string name="cc_yangshengqi">麦克风</string>
+    <string name="cc_chatset">会话设置</string>
+    <string name="cc_tool">工具设置</string>
+    <string name="cc_scan">扫一扫</string>
+</resources>
