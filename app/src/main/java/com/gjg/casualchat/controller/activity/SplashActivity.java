@@ -1,12 +1,17 @@
 package com.gjg.casualchat.controller.activity;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,7 +26,9 @@ import com.hyphenate.chat.EMClient;
 
 public class SplashActivity extends Activity {
 
-    private static final int SLEEP_TIME = 2000;
+    private static final int SLEEP_TIME = 1000;
+    private TextView tv_logo_text;
+    private ImageView iv_logo;
     private Handler handler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -75,11 +82,15 @@ public class SplashActivity extends Activity {
         setContentView(R.layout.activity_splash);
         LinearLayout linearLayout= (LinearLayout) this.findViewById(R.id.ll_splash);
         TextView version= (TextView) this.findViewById(R.id.tv_version);
+        tv_logo_text= (TextView) this.findViewById(R.id.tv_logo_text);
+        iv_logo= (ImageView) this.findViewById(R.id.iv_logo);
         version.setText(getAppVersion());
         //设置动画透明度
-        AlphaAnimation animation=new AlphaAnimation(0.3f,1.0f);
-        animation.setDuration(1500);
-        linearLayout.startAnimation(animation);
+//        AlphaAnimation animation=new AlphaAnimation(0.3f,1.0f);
+//        animation.setDuration(500);
+//        linearLayout.startAnimation(animation);
+        startLogoAnimTxt();
+        startLogoAnimBg();
         handler.sendMessageDelayed(Message.obtain(),SLEEP_TIME);
     }
 
@@ -101,5 +112,38 @@ public class SplashActivity extends Activity {
             e.printStackTrace();
         }
         return versionInfo;
+    }
+
+    /**
+     * logo文字的动画
+     */
+    private void startLogoAnimTxt() {
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.anim_splash_top_in);
+        tv_logo_text.startAnimation(animation);
+        ObjectAnimator.ofFloat(iv_logo,"alpha",0.0f,1.0f).setDuration(1300).start();//背景圆圈渐变的动画
+    }
+
+    /**
+     * logo背景的动画
+     */
+    private void startLogoAnimBg() {
+        final ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
+        valueAnimator.setDuration(1000);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float fraction = valueAnimator.getAnimatedFraction();
+                if (fraction >= 0.6) {
+                    AnimatorSet animatorSet = new AnimatorSet();
+                    animatorSet.setDuration(1300);
+                    animatorSet.playTogether(ObjectAnimator.ofFloat(iv_logo, "scaleX", new float[]{1.0f, 1.25f, 0.75f, 1.15f, 1.0f}),
+                            ObjectAnimator.ofFloat(iv_logo, "scaleY", new float[]{1.0f, 0.75f, 1.25f, 0.85f, 1.0f}));
+                    animatorSet.start();
+
+                }
+            }
+
+        });
+        valueAnimator.start();
     }
 }
