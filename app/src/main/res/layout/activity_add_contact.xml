@@ -8,7 +8,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@android:color/holo_blue_dark">
+        android:background="@color/top_bar_normal_bg">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/cc_mm_title_back"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -16,7 +23,7 @@
             android:layout_centerInParent="true"
             android:text="添加联系人"
             android:textColor="@android:color/white"
-            android:textSize="25sp" />
+            android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/tv_add_find"
@@ -27,7 +34,7 @@
             android:gravity="center"
             android:text="查找"
             android:textColor="@android:color/white"
-            android:textSize="25sp" />
+            android:textSize="20sp"/>
     </RelativeLayout>
 
     <EditText
@@ -37,7 +44,7 @@
         android:hint="请输入联系人名字"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="26sp"
+        android:textSize="22sp"
         android:layout_margin="20dp"
         android:background="@drawable/cc_add_contact_et_bg"/>
 

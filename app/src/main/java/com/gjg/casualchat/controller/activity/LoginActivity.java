@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.gjg.casualchat.R;
@@ -15,35 +16,64 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
 
+import java.util.regex.Pattern;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Created by JunGuang_Gao
  * on 2017/2/12  20:58.
  */
 
 public class LoginActivity extends Activity {
-    private EditText et_username;
-    private EditText et_password;
+    @BindView(R.id.et_username)
+    EditText et_username;
+    @BindView(R.id.et_password)
+    EditText et_password;
+    @BindView(R.id.bt_register)
+    Button btRegister;
+    @BindView(R.id.bt_login)
+    Button btLogin;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
         initView();
     }
 
     private void initView() {
-        et_username= (EditText) this.findViewById(R.id.et_username);
-        et_password= (EditText) this.findViewById(R.id.et_password);
+        et_username = (EditText) this.findViewById(R.id.et_username);
+        et_password = (EditText) this.findViewById(R.id.et_password);
 
     }
 
 
-    public void register(View view){
-        final String register_username=et_username.getText().toString();
-        final String register_password=et_password.getText().toString();
+    @OnClick(R.id.bt_register)
+    public void register(View view) {
+        final String register_username = et_username.getText().toString();
+        final String register_password = et_password.getText().toString();
+        if (register_username.length() < 4 || register_username.length() > 10) {
+            Tools.showToastMessage(this, "用户名的长度为4-10");
+            return;
+        }
+        if (register_password.length() < 6 || register_password.length() > 12) {
+            Tools.showToastMessage(this, "密码的长度为6-12");
+            return;
+        }
+        Pattern var3 = Pattern.compile("^[a-zA-Z0-9_@#]+$");
+        boolean isRight = var3.matcher(register_password).find();
+        if (!isRight) {
+            Tools.showToastMessage(this, "密码只能是数字、字母、下划线、@和#");
+            return;
+        }
         //校验用户名和密码
-        if (TextUtils.isEmpty(register_username)||TextUtils.isEmpty(register_password)){
-            Tools.showToastMessage(this,"用户名或密码不能为空");
+        if (TextUtils.isEmpty(register_username) || TextUtils.isEmpty(register_password)) {
+            Tools.showToastMessage(this, "用户名或密码不能为空");
             return;
         }
 
@@ -52,11 +82,11 @@ public class LoginActivity extends Activity {
             @Override
             public void run() {
                 try {
-                    EMClient.getInstance().createAccount(register_username,register_password);
+                    EMClient.getInstance().createAccount(register_username, register_password);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Tools.showToastMessage(LoginActivity.this,"注册成功,请直接登录！");
+                            Tools.showToastMessage(LoginActivity.this, "注册成功,请直接登录！");
                         }
                     });
                 } catch (HyphenateException e) {
@@ -64,7 +94,7 @@ public class LoginActivity extends Activity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Tools.showToastMessage(LoginActivity.this,"注册失败，请重新注册");
+                            Tools.showToastMessage(LoginActivity.this, "注册失败，请重新注册");
                         }
                     });
 
@@ -74,12 +104,13 @@ public class LoginActivity extends Activity {
 
     }
 
-    public void login(View view){
-        final String login_username=et_username.getText().toString();
-        final String login_password=et_password.getText().toString();
+    @OnClick(R.id.bt_login)
+    public void login(View view) {
+        final String login_username = et_username.getText().toString();
+        final String login_password = et_password.getText().toString();
         //校验用户名和密码
-        if (TextUtils.isEmpty(login_username)||TextUtils.isEmpty(login_password)){
-            Tools.showToastMessage(this,"用户名或密码不能为空");
+        if (TextUtils.isEmpty(login_username) || TextUtils.isEmpty(login_password)) {
+            Tools.showToastMessage(this, "用户名或密码不能为空");
             return;
         }
 
@@ -118,7 +149,7 @@ public class LoginActivity extends Activity {
                             @Override
                             public void run() {
                                 // 提示登录失败
-                                Tools.showToastMessage(LoginActivity.this, "登录失败"+s);
+                                Tools.showToastMessage(LoginActivity.this, "登录失败" + s);
                             }
                         });
 

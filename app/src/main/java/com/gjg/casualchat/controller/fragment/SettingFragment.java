@@ -244,9 +244,11 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==RESULT_OK){
+        if(resultCode==RESULT_OK){
             Bundle bundle = data.getExtras();
             String result = bundle.getString("result");
+
+
             Dialog dialog=new Dialog(getActivity());
             dialog.setTitle("扫描结果");
             TextView textView=new TextView(getActivity());

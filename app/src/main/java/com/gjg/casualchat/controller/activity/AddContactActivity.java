@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,54 +18,65 @@ import com.gjg.casualchat.model.bean.UserInfo;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+import static com.gjg.casualchat.R.id.bt_add_add;
+import static com.gjg.casualchat.R.id.et_add_name;
+import static com.gjg.casualchat.R.id.rl_add;
+import static com.gjg.casualchat.R.id.tv_add_find;
+import static com.gjg.casualchat.R.id.tv_add_name;
+
 public class AddContactActivity extends Activity {
 
-    private TextView tv_add_find;
-    private EditText et_add_name;
-    private RelativeLayout rl_add;
-    private TextView tv_add_name;
-    private Button bt_add_add;
+    @BindView(tv_add_find)
+    TextView tvAddFind;
+    @BindView(et_add_name)
+    EditText etAddName;
+    @BindView(R.id.iv_add_photo)
+    ImageView ivAddPhoto;
+    @BindView(tv_add_name)
+    TextView tvAddName;
+    @BindView(bt_add_add)
+    Button btAddAdd;
+    @BindView(rl_add)
+    RelativeLayout rlAdd;
+    @BindView(R.id.iv_back)
+    ImageView ivBack;
+
     private UserInfo userInfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_add_contact);
-        // 初始化view
-        initView();
+        ButterKnife.bind(this);
 
-        initListener();
 
     }
-    private void initView() {
-        tv_add_find = (TextView) findViewById(R.id.tv_add_find);
-        et_add_name = (EditText) findViewById(R.id.et_add_name);
-        rl_add = (RelativeLayout) findViewById(R.id.rl_add);
-        tv_add_name = (TextView) findViewById(R.id.tv_add_name);
-        bt_add_add = (Button) findViewById(R.id.bt_add_add);
-    }
-    private void initListener() {
-        // 查找按钮的点击事件处理
-        tv_add_find.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                find();
-            }
-        });
 
-        // 添加按钮的点击事件处理
-        bt_add_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                add();
-            }
-        });
+
+    @OnClick(tv_add_find)
+    public void searchFriend(View view) {
+        find();
+    }
+
+    @OnClick(bt_add_add)
+    public void addFriend(View view) {
+        add();
+    }
+
+    @OnClick(R.id.iv_back)
+    public void backTo(View view) {
+        finish();
     }
 
     // 查找按钮的处理
     private void find() {
         // 获取输入的用户名称
-        final String name = et_add_name.getText().toString();
+        final String name = etAddName.getText().toString();
 
         // 校验输入的名称
         if (TextUtils.isEmpty(name)) {
@@ -82,8 +94,8 @@ public class AddContactActivity extends Activity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        rl_add.setVisibility(View.VISIBLE);
-                        tv_add_name.setText(userInfo.getName());
+                        rlAdd.setVisibility(View.VISIBLE);
+                        tvAddName.setText(userInfo.getName());
                     }
                 });
             }

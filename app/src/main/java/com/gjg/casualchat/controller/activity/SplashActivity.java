@@ -20,27 +20,58 @@ import com.gjg.casualchat.model.Model;
 import com.gjg.casualchat.model.bean.UserInfo;
 import com.hyphenate.chat.EMClient;
 
+import java.lang.ref.WeakReference;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+import static com.gjg.casualchat.R.id.iv_logo;
+
 /**
  * Created by JunGuang_Gao on 2017/2/12.
  */
 
 public class SplashActivity extends Activity {
 
-    private static final int SLEEP_TIME = 1000;
-    private TextView tv_logo_text;
-    private ImageView iv_logo;
-    private Handler handler=new Handler(){
+    private static final int SLEEP_TIME = 2500;
+
+    @BindView(R.id.iv_logo)
+    ImageView ivLogo;
+    @BindView(R.id.tv_logo_text)
+    TextView tvLogoText;
+    @BindView(R.id.tv_version)
+    TextView tvVersion;
+    @BindView(R.id.ll_splash)
+    LinearLayout llSplash;
+
+    private MyHandler handler = new MyHandler(this);
+
+    static class MyHandler extends Handler {
+
+        private final WeakReference<SplashActivity> mActivity;
+
+        public MyHandler(SplashActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
         @Override
         public void handleMessage(Message msg) {
             //若activity退出就不处理消息
-            if(isFinishing()){
-                return;
+            if (mActivity.get() != null) {
+
+                SplashActivity splashActivity = mActivity.get();
+                if (splashActivity.isFinishing()) {
+                    return;
+                }
+
+                // 判断进入主页面还是登录页面
+                splashActivity.goMainOrLogin();
+
             }
 
-            // 判断进入主页面还是登录页面
-            goMainOrLogin();
+
         }
-    };
+    }
 
     private void goMainOrLogin() {
 
@@ -48,26 +79,26 @@ public class SplashActivity extends Activity {
             @Override
             public void run() {
                 //判断之前是否登录过
-                if(EMClient.getInstance().isLoggedInBefore()){
+                if (EMClient.getInstance().isLoggedInBefore()) {
                     //获取用户信息
                     UserInfo account = Model.getInstance().getUserAccountDao().getAccountByHxId(EMClient.getInstance().getCurrentUser());
 
-                    if (account==null) {
+                    if (account == null) {
                         //跳转到登录页面
-                        Intent intent=new Intent(SplashActivity.this,LoginActivity.class);
+                        Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                         startActivity(intent);
 
-                    }else {
+                    } else {
                         Model.getInstance().loginSuccess(account);
                         //跳转到主页面
-                        Intent intent=new Intent(SplashActivity.this,MainActivity.class);
+                        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                         startActivity(intent);
                     }
 
 
-                }else {
+                } else {
                     //跳转到登录页面
-                    Intent intent=new Intent(SplashActivity.this,LoginActivity.class);
+                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(intent);
 
                 }
@@ -80,34 +111,33 @@ public class SplashActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        LinearLayout linearLayout= (LinearLayout) this.findViewById(R.id.ll_splash);
-        TextView version= (TextView) this.findViewById(R.id.tv_version);
-        tv_logo_text= (TextView) this.findViewById(R.id.tv_logo_text);
-        iv_logo= (ImageView) this.findViewById(R.id.iv_logo);
-        version.setText(getAppVersion());
+        ButterKnife.bind(this);
+
+        tvVersion.setText(getAppVersion());
         //设置动画透明度
 //        AlphaAnimation animation=new AlphaAnimation(0.3f,1.0f);
 //        animation.setDuration(500);
 //        linearLayout.startAnimation(animation);
-        startLogoAnimTxt();
+
         startLogoAnimBg();
-        handler.sendMessageDelayed(Message.obtain(),SLEEP_TIME);
+        startLogoAnimTxt();
+
+        handler.sendMessageDelayed(Message.obtain(), SLEEP_TIME);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         //销毁消息
         handler.removeCallbacksAndMessages(null);
     }
 
     private String getAppVersion() {
-        String versionInfo="";
-        String packageName=this.getPackageName();
+        String versionInfo = "";
+        String packageName = this.getPackageName();
         try {
-            String versionName=this.getPackageManager().getPackageInfo(packageName,0).versionName;
-            versionInfo="随聊 "+versionName;
+            String versionName = this.getPackageManager().getPackageInfo(packageName, 0).versionName;
+            versionInfo = "随聊 " + versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -119,8 +149,8 @@ public class SplashActivity extends Activity {
      */
     private void startLogoAnimTxt() {
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.anim_splash_top_in);
-        tv_logo_text.startAnimation(animation);
-        ObjectAnimator.ofFloat(iv_logo,"alpha",0.0f,1.0f).setDuration(1300).start();//背景圆圈渐变的动画
+        tvLogoText.startAnimation(animation);
+        ObjectAnimator.ofFloat(iv_logo, "alpha", 0.0f, 1.0f).setDuration(1300).start();//背景圆圈渐变的动画
     }
 
     /**
@@ -132,12 +162,13 @@ public class SplashActivity extends Activity {
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                //分度值是动画执行的百分比。区别于AnimatedValue。
                 float fraction = valueAnimator.getAnimatedFraction();
-                if (fraction >= 0.6) {
+                if (fraction >= 0.4) {
                     AnimatorSet animatorSet = new AnimatorSet();
-                    animatorSet.setDuration(1300);
-                    animatorSet.playTogether(ObjectAnimator.ofFloat(iv_logo, "scaleX", new float[]{1.0f, 1.25f, 0.75f, 1.15f, 1.0f}),
-                            ObjectAnimator.ofFloat(iv_logo, "scaleY", new float[]{1.0f, 0.75f, 1.25f, 0.85f, 1.0f}));
+                    animatorSet.setDuration(1500);
+                    animatorSet.playTogether(ObjectAnimator.ofFloat(ivLogo, "scaleX", new float[]{1.0f, 1.20f, 0.75f, 1.0f}),
+                            ObjectAnimator.ofFloat(ivLogo, "scaleY", new float[]{1.0f, 0.75f, 1.25f, 0.85f, 1.0f}));
                     animatorSet.start();
 
                 }

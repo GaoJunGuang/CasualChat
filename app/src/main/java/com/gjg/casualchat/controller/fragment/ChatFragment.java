@@ -1,6 +1,7 @@
 package com.gjg.casualchat.controller.fragment;
 
 import android.content.Intent;
+import android.view.WindowManager;
 
 import com.gjg.casualchat.controller.activity.ChatActivity;
 import com.hyphenate.EMMessageListener;
@@ -22,7 +23,7 @@ import java.util.List;
 public class ChatFragment extends EaseConversationListFragment {
 
 
-    private EMMessageListener emMessageListener=new EMMessageListener() {
+    private EMMessageListener emMessageListener = new EMMessageListener() {
         @Override
         public void onMessageReceived(List<EMMessage> list) {
             // 设置数据
@@ -56,6 +57,9 @@ public class ChatFragment extends EaseConversationListFragment {
     @Override
     protected void initView() {
         super.initView();
+        //隐藏软键盘
+        getActivity().getWindow().setSoftInputMode( WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         // 跳转到会话详情页面
         setConversationListItemClickListener(new EaseConversationListItemClickListener() {
             @Override
@@ -66,7 +70,7 @@ public class ChatFragment extends EaseConversationListFragment {
                 intent.putExtra(EaseConstant.EXTRA_USER_ID, conversation.conversationId());
 
                 // 是否是否群聊
-                if(conversation.getType() == EMConversation.EMConversationType.GroupChat) {
+                if (conversation.getType() == EMConversation.EMConversationType.GroupChat) {
                     intent.putExtra(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_GROUP);
                 }
 
@@ -79,5 +83,11 @@ public class ChatFragment extends EaseConversationListFragment {
 
         // 监听会话消息
         EMClient.getInstance().chatManager().addMessageListener(emMessageListener);
+
+
+
     }
+
+    
+
 }
